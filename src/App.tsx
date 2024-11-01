@@ -21,20 +21,22 @@ function App() {
   }, []);
 
   return (
-    <div className="h-screen bg-black text-white p-2 flex flex-col gap-2 font-mono max-h-screen overflow-hidden">
+    <div className="min-h-screen bg-black text-white p-2 flex flex-col gap-2 font-mono">
       <Header level={kardashevLevel} power={currentPower} />
       
-      <div className="grid grid-cols-12 gap-2 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 flex-1">
         {/* Left Column */}
-        <div className="col-span-3 grid grid-rows-4 gap-2 max-h-full">
-          <PowerGrid power={currentPower} />
+        <div className="lg:col-span-3 grid grid-cols-2 lg:grid-cols-1 gap-2">
+          <div className="col-span-2 lg:col-span-1">
+            <PowerGrid power={currentPower} />
+          </div>
           <ResourceMonitor power={currentPower} />
           <TechnologyStatus level={kardashevLevel} />
           <RequiredAdvances level={kardashevLevel} />
         </div>
 
         {/* Right Column */}
-        <div className="col-span-9 flex flex-col gap-2 max-h-full">
+        <div className="lg:col-span-9 flex flex-col gap-2">
           <ScaleVisualization currentLevel={kardashevLevel} />
           
           <div className="grid grid-cols-3 gap-2">

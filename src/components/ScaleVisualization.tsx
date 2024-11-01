@@ -40,11 +40,38 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel })
   const currentMilestone = getCurrentMilestone(currentLevel);
   const nextMilestone = getNextMilestone(currentLevel);
 
+  // Calculate progress percentage to Type I (level 1.0)
+  const progressToTypeI = (currentLevel / 1.0) * 100;
+  const remainingToTypeI = 100 - progressToTypeI;
+  const currentPowerWatts = Math.pow(10, (currentLevel * 10) + 6);
+  const type1PowerWatts = Math.pow(10, 16);
+  const remainingPowerWatts = type1PowerWatts - currentPowerWatts;
+
   return (
     <div className="bg-black border border-white/10 rounded p-4">
       <div className="flex items-center gap-2 mb-4">
         <Info className="w-4 h-4" />
         <h2 className="text-sm">KARDASHEV SCALE PROGRESS</h2>
+      </div>
+
+      {/* Progress to Type I Summary */}
+      <div className="mb-6 p-4 bg-white/5 rounded-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h3 className="text-sm text-white/70 mb-1">PROGRESS TO TYPE I</h3>
+            <div className="text-2xl font-bold">{progressToTypeI.toFixed(2)}%</div>
+          </div>
+          <div>
+            <h3 className="text-sm text-white/70 mb-1">REMAINING ENERGY NEEDED</h3>
+            <div className="text-2xl font-mono">{remainingPowerWatts.toExponential(2)} W</div>
+          </div>
+        </div>
+        <div className="mt-4 h-2 bg-white/10 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-1000"
+            style={{ width: `${progressToTypeI}%` }}
+          />
+        </div>
       </div>
 
       {/* Main Scale Bar */}
@@ -81,10 +108,13 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel })
       </div>
 
       {/* Current Level Display */}
-      <div className="text-center">
-        <div className="text-3xl font-bold font-mono mb-2">
+      <div className="text-center mb-4">
+        <div className="text-3xl font-bold font-mono">
           {currentLevel.toFixed(4)}
           <span className="text-white/50 ml-2 text-xl">K</span>
+        </div>
+        <div className="text-sm text-white/70 mt-1">
+          Next milestone: {nextMilestone.label} ({nextMilestone.level.toFixed(1)} K)
         </div>
       </div>
 
