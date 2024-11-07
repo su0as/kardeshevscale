@@ -18,15 +18,15 @@ export const CivilizationPanel: React.FC<CivilizationPanelProps> = ({
   const isActive = currentLevel >= type - 0.5;
 
   return (
-    <div className={`bg-black rounded p-2 flex-1 min-h-0 ${
+    <div className={`bg-black rounded p-2 flex flex-col h-full ${
       isActive ? 'border border-white/20' : 'border border-white/5'
     }`}>
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-2 flex-none">
         <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-white/30'}`} />
         <h2 className="text-base">TYPE {type} CIVILIZATION</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 h-[calc(100%-2rem)]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 flex-1 overflow-auto min-h-0">
         <div className="space-y-2">
           <div className="bg-white/5 rounded p-2">
             <h3 className="text-white/70 text-sm mb-1">ENERGY USAGE</h3>
@@ -72,6 +72,18 @@ export const CivilizationPanel: React.FC<CivilizationPanelProps> = ({
             </ul>
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-center mt-4 flex-none">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className="w-24 h-24 rounded-lg object-cover"
+        >
+          <source src="https://images.beta.cosmos.so/31a76064-219f-4113-b42f-cb69e87e4cd7.mp4" type="video/mp4" />
+        </video>
       </div>
     </div>
   );
