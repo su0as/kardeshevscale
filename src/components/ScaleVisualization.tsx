@@ -61,13 +61,12 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel, s
   const getPopupPosition = () => {
     if (!containerRect) return {};
     
-    const popupWidth = 256; // w-64 = 16rem = 256px
+    const popupWidth = 256;
     const padding = 12;
     
     let left = mousePos.x + padding;
     let top = mousePos.y;
     
-    // If popup would overflow right edge, show it on the left side of the cursor
     if (left + popupWidth > containerRect.width) {
       left = mousePos.x - popupWidth - padding;
     }
@@ -79,24 +78,24 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel, s
   };
 
   return (
-    <div className="bg-black border border-white/10 rounded p-4 font-mono relative">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="bg-black border border-white/10 rounded p-2 font-mono relative">
+      <div className="flex items-center gap-2 mb-2">
         <Info className="w-4 h-4" />
-        <h2 className="text-sm">KARDASHEV SCALE PROGRESS</h2>
+        <h2 className="text-xs">KARDASHEV SCALE PROGRESS</h2>
       </div>
 
-      <div className="mb-6 p-4 bg-white/5 rounded-lg">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="mb-3 p-2 bg-white/5 rounded-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div>
-            <h3 className="text-sm text-white/70 mb-1">PROGRESS TO TYPE {selectedType}</h3>
-            <div className="text-2xl font-bold">{progressToSelectedType.toFixed(2)}%</div>
+            <h3 className="text-xs text-white/70 mb-0.5">PROGRESS TO TYPE {selectedType}</h3>
+            <div className="text-base font-bold">{progressToSelectedType.toFixed(2)}%</div>
           </div>
           <div>
-            <h3 className="text-sm text-white/70 mb-1">REMAINING ENERGY NEEDED</h3>
-            <div className="text-2xl">{remainingPowerWatts.toExponential(2)} W</div>
+            <h3 className="text-xs text-white/70 mb-0.5">REMAINING ENERGY NEEDED</h3>
+            <div className="text-base">{remainingPowerWatts.toExponential(2)} W</div>
           </div>
         </div>
-        <div className="mt-4 h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
           <div 
             className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-1000"
             style={{ width: `${progressToSelectedType}%` }}
@@ -105,7 +104,7 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel, s
       </div>
 
       <div 
-        className="relative h-12 bg-white/5 rounded-lg mb-6 overflow-hidden touch-none"
+        className="relative h-8 bg-white/5 rounded-lg mb-3 overflow-hidden touch-none"
         onMouseMove={handleMouseMove}
       >
         <div
@@ -123,45 +122,45 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel, s
             onTouchStart={() => setHoveredLevel(level)}
             onTouchEnd={() => setHoveredLevel(null)}
           >
-            <div className={`w-1 h-full mx-auto transition-opacity duration-300 ${
+            <div className={`w-0.5 h-full mx-auto transition-opacity duration-300 ${
               hoveredLevel === level ? 'opacity-100' : 'opacity-30'
             } bg-gradient-to-r ${color}`} />
           </div>
         ))}
 
         <div 
-          className="absolute w-2 h-full bg-white shadow-lg shadow-white/20"
+          className="absolute w-1.5 h-full bg-white shadow-lg shadow-white/20"
           style={{ left: `${getWidth(currentLevel)}%` }}
         />
       </div>
 
-      <div className="text-center mb-4">
-        <div className="text-3xl font-bold">
+      <div className="text-center mb-2">
+        <div className="text-xl font-bold">
           {currentLevel.toFixed(4)}
-          <span className="text-white/50 ml-2 text-xl">K</span>
+          <span className="text-white/50 ml-1 text-base">K</span>
         </div>
-        <div className="text-sm text-white/70 mt-1">
+        <div className="text-xs text-white/70">
           Next milestone: {nextMilestone.label} ({nextMilestone.level.toFixed(1)} K)
         </div>
       </div>
 
       {hoveredLevel !== null && (
         <div 
-          className="absolute z-50 bg-black/90 border border-white/20 rounded-lg p-4 w-64 shadow-lg backdrop-blur-sm"
+          className="absolute z-50 bg-black/90 border border-white/20 rounded-lg p-2 w-64 shadow-lg backdrop-blur-sm"
           style={getPopupPosition()}
         >
           {milestones.map(milestone => {
             if (milestone.level === hoveredLevel) {
               return (
                 <div key={milestone.level}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${milestone.color}`} />
-                    <span className="font-medium">{milestone.label}</span>
-                    <span className="ml-auto text-white/50">{milestone.level.toFixed(1)}</span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${milestone.color}`} />
+                    <span className="text-sm font-medium">{milestone.label}</span>
+                    <span className="ml-auto text-xs text-white/50">{milestone.level.toFixed(1)}</span>
                   </div>
-                  <p className="text-sm text-white/70">{milestone.description}</p>
-                  <div className="mt-2 pt-2 border-t border-white/10">
-                    <div className="text-xs text-white/50">
+                  <p className="text-xs text-white/70">{milestone.description}</p>
+                  <div className="mt-1.5 pt-1.5 border-t border-white/10">
+                    <div className="text-[10px] text-white/50">
                       {milestone.level <= currentLevel ? 'ACHIEVED' : 'PROJECTED'}
                     </div>
                   </div>

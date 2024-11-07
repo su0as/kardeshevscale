@@ -18,28 +18,28 @@ export const CivilizationPanel: React.FC<CivilizationPanelProps> = ({
   const isActive = currentLevel >= type - 0.5;
 
   return (
-    <div className={`bg-black rounded p-4 flex-1 overflow-auto ${
+    <div className={`bg-black rounded p-2 flex-1 min-h-0 ${
       isActive ? 'border border-white/20' : 'border border-white/5'
     }`}>
-      <div className="flex items-center gap-2 mb-4">
-        <Icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-white/30'}`} />
-        <h2 className="text-xl">TYPE {type} CIVILIZATION</h2>
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-white/30'}`} />
+        <h2 className="text-base">TYPE {type} CIVILIZATION</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-4">
-          <div className="bg-white/5 rounded p-4">
-            <h3 className="text-white/70 text-lg mb-2">ENERGY USAGE</h3>
-            <p className="text-2xl font-mono">{data.power}</p>
-            <p className="text-sm text-white/50 mt-2">{data.description}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 h-[calc(100%-2rem)]">
+        <div className="space-y-2">
+          <div className="bg-white/5 rounded p-2">
+            <h3 className="text-white/70 text-sm mb-1">ENERGY USAGE</h3>
+            <p className="text-lg font-mono">{data.power}</p>
+            <p className="text-xs text-white/50 mt-1">{data.description}</p>
           </div>
 
-          <div className="bg-white/5 rounded p-4">
-            <h3 className="text-white/70 mb-3">KEY TECHNOLOGIES</h3>
-            <ul className="space-y-2">
+          <div className="bg-white/5 rounded p-2">
+            <h3 className="text-white/70 text-sm mb-2">KEY TECHNOLOGIES</h3>
+            <ul className="space-y-1 text-xs">
               {data.technologies.map((tech, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                <li key={i} className="flex items-center gap-1.5">
+                  <div className="w-1 h-1 rounded-full bg-white/50" />
                   <span>{tech}</span>
                 </li>
               ))}
@@ -47,25 +47,25 @@ export const CivilizationPanel: React.FC<CivilizationPanelProps> = ({
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="bg-white/5 rounded p-4">
-            <h3 className="text-white/70 mb-3">MAJOR ACHIEVEMENTS</h3>
-            <ul className="space-y-2">
+        <div className="space-y-2">
+          <div className="bg-white/5 rounded p-2">
+            <h3 className="text-white/70 text-sm mb-2">MAJOR ACHIEVEMENTS</h3>
+            <ul className="space-y-1 text-xs">
               {data.achievements.map((achievement, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                <li key={i} className="flex items-center gap-1.5">
+                  <div className="w-1 h-1 rounded-full bg-white/50" />
                   <span>{achievement}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-white/5 rounded p-4">
-            <h3 className="text-white/70 mb-3">CHALLENGES</h3>
-            <ul className="space-y-2">
+          <div className="bg-white/5 rounded p-2">
+            <h3 className="text-white/70 text-sm mb-2">CHALLENGES</h3>
+            <ul className="space-y-1 text-xs">
               {data.challenges.map((challenge, i) => (
-                <li key={i} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                <li key={i} className="flex items-center gap-1.5">
+                  <div className="w-1 h-1 rounded-full bg-white/50" />
                   <span>{challenge}</span>
                 </li>
               ))}
