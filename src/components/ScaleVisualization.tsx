@@ -3,6 +3,7 @@ import { Info } from 'lucide-react';
 
 interface ScaleVisualizationProps {
   currentLevel: number;
+  selectedType: number;
 }
 
 const milestones = [
@@ -15,9 +16,10 @@ const milestones = [
   { level: 3.0, label: "Type III", description: "Galaxy-wide energy utilization", color: 'from-purple-400 to-violet-400' }
 ];
 
-const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel }) => {
+const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel, selectedType }) => {
   const [hoveredLevel, setHoveredLevel] = useState<number | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
 
   const getWidth = (level: number) => {
     return (level / 3) * 100;
@@ -34,65 +36,92 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel })
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePos({ x: e.clientX, y: e.clientY });
+    const rect = e.currentTarget.getBoundingClientRect();
+    setContainerRect(rect);
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
   };
 
   const currentMilestone = getCurrentMilestone(currentLevel);
   const nextMilestone = getNextMilestone(currentLevel);
 
-  // Calculate progress percentage to Type I (level 1.0)
-  const progressToTypeI = (currentLevel / 1.0) * 100;
-  const remainingToTypeI = 100 - progressToTypeI;
+  const getProgressToType = (type: number) => {
+    const typeLevel = type;
+    const progress = (currentLevel / typeLevel) * 100;
+    return Math.min(progress, 100);
+  };
+
+  const progressToSelectedType = getProgressToType(selectedType);
   const currentPowerWatts = Math.pow(10, (currentLevel * 10) + 6);
-  const type1PowerWatts = Math.pow(10, 16);
-  const remainingPowerWatts = type1PowerWatts - currentPowerWatts;
+  const targetPowerWatts = Math.pow(10, (selectedType * 10) + 6);
+  const remainingPowerWatts = targetPowerWatts - currentPowerWatts;
+
+  const getPopupPosition = () => {
+    if (!containerRect) return {};
+    
+    const popupWidth = 256; // w-64 = 16rem = 256px
+    const padding = 12;
+    
+    let left = mousePos.x + padding;
+    let top = mousePos.y;
+    
+    // If popup would overflow right edge, show it on the left side of the cursor
+    if (left + popupWidth > containerRect.width) {
+      left = mousePos.x - popupWidth - padding;
+    }
+    
+    return {
+      left: `${left}px`,
+      top: `${top}px`
+    };
+  };
 
   return (
-    <div className="bg-black border border-white/10 rounded p-4">
+    <div className="bg-black border border-white/10 rounded p-4 font-mono relative">
       <div className="flex items-center gap-2 mb-4">
         <Info className="w-4 h-4" />
         <h2 className="text-sm">KARDASHEV SCALE PROGRESS</h2>
       </div>
 
-      {/* Progress to Type I Summary */}
       <div className="mb-6 p-4 bg-white/5 rounded-lg">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h3 className="text-sm text-white/70 mb-1">PROGRESS TO TYPE I</h3>
-            <div className="text-2xl font-bold">{progressToTypeI.toFixed(2)}%</div>
+            <h3 className="text-sm text-white/70 mb-1">PROGRESS TO TYPE {selectedType}</h3>
+            <div className="text-2xl font-bold">{progressToSelectedType.toFixed(2)}%</div>
           </div>
           <div>
             <h3 className="text-sm text-white/70 mb-1">REMAINING ENERGY NEEDED</h3>
-            <div className="text-2xl font-mono">{remainingPowerWatts.toExponential(2)} W</div>
+            <div className="text-2xl">{remainingPowerWatts.toExponential(2)} W</div>
           </div>
         </div>
         <div className="mt-4 h-2 bg-white/10 rounded-full overflow-hidden">
           <div 
             className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all duration-1000"
-            style={{ width: `${progressToTypeI}%` }}
+            style={{ width: `${progressToSelectedType}%` }}
           />
         </div>
       </div>
 
-      {/* Main Scale Bar */}
       <div 
-        className="relative h-12 bg-white/5 rounded-lg mb-6 overflow-hidden"
+        className="relative h-12 bg-white/5 rounded-lg mb-6 overflow-hidden touch-none"
         onMouseMove={handleMouseMove}
       >
-        {/* Progress Gradient */}
         <div
           className={`absolute h-full bg-gradient-to-r ${currentMilestone.color} transition-all duration-1000`}
           style={{ width: `${getWidth(currentLevel)}%` }}
         />
         
-        {/* Milestone Markers */}
         {milestones.map(({ level, color }) => (
           <div
             key={level}
-            className="absolute h-full group"
+            className="absolute h-full group cursor-pointer"
             style={{ left: `${getWidth(level)}%`, width: '20px', transform: 'translateX(-10px)' }}
             onMouseEnter={() => setHoveredLevel(level)}
             onMouseLeave={() => setHoveredLevel(null)}
+            onTouchStart={() => setHoveredLevel(level)}
+            onTouchEnd={() => setHoveredLevel(null)}
           >
             <div className={`w-1 h-full mx-auto transition-opacity duration-300 ${
               hoveredLevel === level ? 'opacity-100' : 'opacity-30'
@@ -100,16 +129,14 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel })
           </div>
         ))}
 
-        {/* Current Position Marker */}
         <div 
           className="absolute w-2 h-full bg-white shadow-lg shadow-white/20"
           style={{ left: `${getWidth(currentLevel)}%` }}
         />
       </div>
 
-      {/* Current Level Display */}
       <div className="text-center mb-4">
-        <div className="text-3xl font-bold font-mono">
+        <div className="text-3xl font-bold">
           {currentLevel.toFixed(4)}
           <span className="text-white/50 ml-2 text-xl">K</span>
         </div>
@@ -118,15 +145,10 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel })
         </div>
       </div>
 
-      {/* Hover Popup */}
       {hoveredLevel !== null && (
         <div 
-          className="fixed z-50 bg-black/90 border border-white/20 rounded-lg p-4 w-64 shadow-lg backdrop-blur-sm"
-          style={{ 
-            left: mousePos.x + 20,
-            top: mousePos.y - 40,
-            transform: 'translateY(-50%)'
-          }}
+          className="absolute z-50 bg-black/90 border border-white/20 rounded-lg p-4 w-64 shadow-lg backdrop-blur-sm"
+          style={getPopupPosition()}
         >
           {milestones.map(milestone => {
             if (milestone.level === hoveredLevel) {
@@ -135,7 +157,7 @@ const ScaleVisualization: React.FC<ScaleVisualizationProps> = ({ currentLevel })
                   <div className="flex items-center gap-2 mb-2">
                     <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${milestone.color}`} />
                     <span className="font-medium">{milestone.label}</span>
-                    <span className="ml-auto font-mono text-white/50">{milestone.level.toFixed(1)}</span>
+                    <span className="ml-auto text-white/50">{milestone.level.toFixed(1)}</span>
                   </div>
                   <p className="text-sm text-white/70">{milestone.description}</p>
                   <div className="mt-2 pt-2 border-t border-white/10">
