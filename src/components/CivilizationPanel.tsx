@@ -8,7 +8,7 @@ interface CivilizationPanelProps {
   expanded: boolean;
 }
 
-export const CivilizationPanel: React.FC<CivilizationPanelProps> = ({ 
+const CivilizationPanel: React.FC<CivilizationPanelProps> = ({ 
   type, 
   currentLevel,
   expanded 
@@ -72,18 +72,6 @@ export const CivilizationPanel: React.FC<CivilizationPanelProps> = ({
             </ul>
           </div>
         </div>
-      </div>
-
-      <div className="flex justify-center mt-4 flex-none">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline
-          className="w-24 h-24 rounded-lg object-cover"
-        >
-          <source src="https://images.beta.cosmos.so/31a76064-219f-4113-b42f-cb69e87e4cd7.mp4" type="video/mp4" />
-        </video>
       </div>
     </div>
   );
